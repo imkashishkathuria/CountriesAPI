@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>Document</title>
+    <style>
+        #main_card {
+            border: 3px solid black;
+            background-color: aquamarine;
+        }
+        #main_card2{
+            border: 3px solid black;
+            background-color: bisque;
+        }
+        #main_card3{
+            border: 3px solid black;
+            background-color: rgb(204, 201, 224);
+        }
+        .card-container {
+            display: flex;
+            /* width: 850px; */
+            display: flex;
+            justify-content: space-between; /* To distribute the cards evenly within the container */
+            flex-wrap: wrap; /* Allow cards to wrap to the next line if needed */
+            margin: 0 -10px; 
+            /* border: 3px solid black; */
+
+        }
+
+        .card-container .col-sm-3 {
+            /* flex: 1;
+            margin: 4px; */
+            flex: 0 0 calc(33.33% - 20px); /* Set flex basis to 33.33% minus twice the desired margin */
+            margin: 10px;
+            
+        }
+        #font{
+            font-size: 40px;
+            color: darkblue;
+            font-weight: bolder;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            text-align: center;
+            text-decoration: wavy;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <p id="font">API data of different countries</p>
+        <div id="dataContainer"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Function to fetch data from the first API
+            function fetchDataFromAPI1() {
+                return fetch('https://restcountries.com/v3.1/name/nepal')
+                    .then(response => response.json())
+                    .catch(error => {
+                        console.error('Error fetching data from API 1:', error);
+                        throw error;
+                    });
+            }
+
+            // Function to fetch data from the second API
+            function fetchDataFromAPI2() {
+                return fetch('https://restcountries.com/v3.1/name/south%20korea')
+                    .then(response => response.json())
+                    .catch(error => {
+                        console.error('Error fetching data from API 2:', error);
+                        throw error;
+                    });
+            }
+            // Function to fetch data from the third API
+            function fetchDataFromAPI3() {
+                return fetch('https://restcountries.com/v3.1/name/turkey')
+                    .then(response => response.json())
+                    .catch(error => {
+                        console.error('Error fetching data from API 1:', error);
+                        throw error;
+                    });
+            }
+
+            // Call all functions to fetch data from all APIs
+            Promise.all([fetchDataFromAPI1(), fetchDataFromAPI2(),fetchDataFromAPI3()])
+                .then(data => {
+                    const dataFromAPI1 = data[0][0];
+                    const dataFromAPI2 = data[1][0];
+                    const dataFromAPI3 = data[2][0];
+
+                    const dataContainer = document.getElementById('dataContainer');
+
+                    // Process the data from all APIs and update the HTML content
+                    let nameOfCountry1 = dataFromAPI1.name.common;
+                    const htmlData1 = `
+                        <div class="col-sm-3">
+                            <div class="card" id="main_card">
+                                <div class="card-body">
+                                    <img src="${dataFromAPI1.flags.svg}" alt="" class="card-body-img" height="200px" width="150px">
+                                    <h1 class="card-title">${nameOfCountry1.toUpperCase()}</h1>
+                                    <h5 class="card-title">Capital: ${dataFromAPI1.capital}</h5>
+                                    <h5 class="card-title">Timezone: ${dataFromAPI1.timezones}</h5>
+                                    <h5 class="card-title">Population: ${dataFromAPI1.population}</h5>
+                                    <h5 class="card-title">Borders: ${dataFromAPI1.borders}</h5>
+                                </div>
+                            </div>
+                        </div>`;
+
+                    let nameOfCountry2 = dataFromAPI2.name.common;
+                    const htmlData2 = `
+                        <div class="col-sm-3">
+                            <div class="card" id="main_card2">
+                                <div class="card-body">
+                                    <img src="${dataFromAPI2.flags.svg}" alt="" class="card-body-img" height="200px" width="200px">
+                                    <h1 class="card-title">${nameOfCountry2.toUpperCase()}</h1>
+                                    <h5 class="card-title">Capital: ${dataFromAPI2.capital}</h5>
+                                    <h5 class="card-title">Timezone: ${dataFromAPI2.timezones}</h5>
+                                    <h5 class="card-title">Population: ${dataFromAPI2.population}</h5>
+                                    <h5 class="card-title">Currencies: ${JSON.stringify(dataFromAPI2.currencies.KRW)}</h5>
+                                </div>
+                            </div>
+                        </div>`;
+                        let nameOfCountry3 = dataFromAPI3.name.common;
+                    const htmlData3 = `
+                        <div class="col-sm-3">
+                            <div class="card" id="main_card3">
+                                <div class="card-body">
+                                    <img src="${dataFromAPI3.flags.svg}" alt="" class="card-body-img" height="200px" width="200px">
+                                    <h1 class="card-title">${nameOfCountry3.toUpperCase()}</h1>
+                                    <h5 class="card-title">Capital: ${dataFromAPI3.capital}</h5>
+                                    <h5 class="card-title">Timezone: ${dataFromAPI3.timezones}</h5>
+                                    <h5 class="card-title">Population: ${dataFromAPI3.population}</h5>
+                                    <h5 class="card-title">Currencies: ${JSON.stringify(dataFromAPI3.currencies.TRY)}</h5>
+                                </div>
+                            </div>
+                        </div>`;
+
+                    dataContainer.innerHTML = `
+                        <div class="row card-container">
+                            ${htmlData1}
+                            ${htmlData2}
+                            ${htmlData3}
+                        </div>`;
+                })
+                .catch(error => {
+                    console.error('Error fetching data from APIs:', error);
+                });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+        </script>
+</body>
+
+</html>
